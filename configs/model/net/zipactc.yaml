@@ -1,0 +1,5 @@
+_target_: src.model.zipa.zipformer_crctc.builders.build_zipactc_model
+work_dir: ${paths.cache_dir}/zipactc
+hf_repo: ???
+# anyspeech/zipa-large-crctc-500k
+# anyspeech/zipa-large-crctc-ns-800k

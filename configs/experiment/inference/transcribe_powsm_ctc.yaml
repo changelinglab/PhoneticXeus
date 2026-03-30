@@ -1,0 +1,47 @@
+# @package _global_
+
+# This config executes inference with POWSM-CTC (CTC-only model):
+# Set data field when calling
+# eg. python src/main.py experiment=inference/transcribe_powsm_ctc data=fleurs task_name=inf_fleurs_powsm_ctc
+
+defaults:
+  - override /logger: csv
+  - override /model: null
+  - override /model/net: null
+
+task_name: ???
+tags: ["powsm_ctc", "inference", "ctc"]
+
+seed: 42
+
+train: false
+test: false
+distributed_predict: True
+
+inference:
+  num_workers: 5 # this model is heavier, per-gpu worker should be less
+  passthrough_keys: ["target", "split", "utt_id", "metadata_idx", "lang_sym"]
+  out_file: ${paths.output_dir}/transcription.json
+  
+  # CTC inference runner
+  inference_runner:
+    _target_: src.model.powsm.powsm_ctc_inference.build_powsm_ctc_inference
+    work_dir: ${paths.cache_dir}/powsm_ctc
+    hf_repo: null
+    force_download: False
+    config_file: null
+    model_file: null
+    bpemodel: null
+    stats_file: null
+    device: cuda # auto, cpu, cuda
+    dtype: float32
+    # Long-form decoding settings
+    max_segment_length: 30.0  # seconds
+    context_len_in_secs: 2.0  # seconds  
+    # Whether to use prompt encoder
+    use_prompt_encoder: true
+  
+  inference_call_args: 
+    text_prev: <na>
+    task_sym: <pr>
+    lang_sym: <unk>

@@ -1,0 +1,47 @@
+# @package _global_
+
+# Usage: 
+# python src/main.py experiment=inference/transcribe_qweninstruct data=cmul2arcticl1 task_name=inf_qwen_l2arctic
+
+defaults:
+  - /prompt: transcribe_ipa
+  - override /logger: csv
+  - override /model: null
+  - override /model/net: null
+
+task_name: ??? 
+tags: ["qweninstruct", "inference", "vllm"]
+
+seed: 42
+
+train: false
+test: false
+distributed_predict: True
+
+inference:
+  # vLLM handles concurrency well. You can increase this (e.g., 4 or 8) 
+  num_workers: 4
+  port: ??  # Each worker will use PORT
+  passthrough_keys: ["target", "split", "utt_id", "metadata_idx", "lang_sym"]
+  out_file: ${paths.output_dir}/transcription.json
+  limit_samples: null
+  inference_runner:
+    _target_: src.model.qwen.inference.VllmInference
+    device: cpu
+    client_config:
+      base_url: "http://localhost:${inference.port}/v1" # change dynamically
+      model_name: "Qwen/Qwen3-Omni-30B-A3B-Instruct"
+      api_key: "EMPTY"  # vLLM doesn't require a real key
+      temperature: 0.0
+      top_p: 0.95
+      max_tokens: 2048
+    # Instruct models usually return plain text. 
+    # Set this if you forced JSON in the prompt, otherwise leave null.
+    output_key: null  
+    clean_response: True
+    cache_key_field: "utt_id"
+    cache_path: ${paths.cache_dir}/qweninstruct/${task_name}.cache.jsonl
+    error_log_path: ${paths.cache_dir}/qweninstruct/${task_name}.errors.jsonl
+    resume: True
+    timeout: 600.0
+    save_thoughts: False # if we want to save model "thoughts" for analysis

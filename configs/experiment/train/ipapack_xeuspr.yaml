@@ -1,0 +1,70 @@
+# @package _global_
+
+# export HF_HOME="exp/cache/hf"
+# python src/main.py experiment=train/ipapack_xeuspr trainer.max_steps=100 trainer.val_check_interval=100 run_folder=test
+
+defaults:
+  - override /data: null # defined below
+  - override /model: phone_recognition
+  - override /model/net: xeuspr
+  - override /trainer: ddp
+  - override /callbacks: default
+  - override /logger: wandb
+
+task_name: train_ipapack_xeuspr
+tags: ["ipapack", "xeuspr", "phone_recognition"]
+
+seed: 42
+
+trainer:
+  devices: -1  # use all available GPUs
+  strategy: ddp_find_unused_parameters_true
+  # min_epochs: 5
+  # max_epochs: 10
+  min_epochs: 0
+  max_epochs: -1
+  max_steps: 50000
+  gradient_clip_val: 1.0
+  accumulate_grad_batches: 1
+  val_check_interval: 5000
+  check_val_every_n_epoch: null
+  log_every_n_steps: 200
+
+data:
+  _target_: src.data.kaldi_pretraining_dataset.build_kaldi_pretraining_datamodule
+  train_split: "train"
+  dev_splits: ["dev_1k"]
+  dataset_config_path: configs/data/ipapack_index.yaml
+  vocab_file: ${model.net.vocab_file}
+  batch_size: 16
+  num_workers: 12
+
+model:
+  dev_splits: ${data.dev_splits}
+  optimizer:
+    lr: 0.00005
+  scheduler:
+    _target_: src.recipe.phone_recognition.model_module.get_w2v2ph_schedule
+    _partial_: true
+    num_training_steps: ${trainer.max_steps}
+    encoder_unfreeze_step: 10000
+
+callbacks:
+  model_checkpoint:
+    monitor: null
+    auto_insert_metric_name: False
+    mode: "min" # dummy
+    save_top_k: -1
+    filename: "checkpoint-{step}"
+    save_last: True
+    every_n_epochs: null
+    every_n_train_steps: ${trainer.val_check_interval} 
+  early_stopping: null
+  learning_rate_monitor:
+    logging_interval: "step"
+
+logger:
+  wandb:
+    tags: ${tags}
+    group: ${task_name}
+    project: "SSLPR"

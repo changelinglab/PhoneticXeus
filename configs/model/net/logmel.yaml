@@ -1,0 +1,3 @@
+_target_: src.model.naive_frontend_model.FrontendModel
+hop_length: 160
+output_vocabsz: ???

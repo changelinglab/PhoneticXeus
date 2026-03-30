@@ -1,0 +1,15 @@
+_target_: src.model.xeusphoneme.builders.build_xeus_pr_from_hf
+work_dir: ${paths.cache_dir}/xeus
+hf_repo: espnet/xeus
+force: false # whether to force download even if files exist
+# provide paths to override from local files instead of HF repo
+# use them to load fine-tuned models or experimental configs
+config_file: null
+checkpoint: null
+vocab_file: src/model/xeusphoneme/resources/ipa_vocab.json
+load_ckpt: true
+interctc_weight: 0.0
+interctc_layer_idx: null
+interctc_use_conditioning: false
+ctc_weight: 1.0
+decoder_config: null

@@ -1,0 +1,42 @@
+# @package _global_
+
+# Self CTC inference with XeusPR.
+# Example command:
+#   python src/main.py experiment=inference/transcribe_xeuspr_auxctc \
+#       inference.inference_runner.checkpoint=path/to/checkpoints/checkpoint.ckpt \
+#       data=powsmeval data.dataset_name=timit \
+#       task_name=test run_folder=test
+#
+
+defaults:
+  - override /logger: csv
+  - override /model: null
+  - override /model/net: null
+
+task_name: ??? # pass inf_<data>_<model> when calling
+tags: ["xeuspr", "self_ctc", "inference"]
+
+train: false
+test: false
+distributed_predict: True
+
+inference:
+  num_workers: 2
+  passthrough_keys: ["target", "split", "utt_id", "metadata_idx", "lang_sym"]
+  out_file: ${paths.output_dir}/transcription.json
+  inference_runner:
+    _target_: src.model.xeusphoneme.builders.build_xeus_pr_inference
+    work_dir: ${paths.cache_dir}/xeus
+    checkpoint: ???  # must be passed on command line
+    vocab_file: src/model/xeusphoneme/resources/ipa_vocab.json
+    hf_repo: espnet/xeus
+    force_download: false
+    config_file: null
+    device: cuda
+    interctc_weight: 0.3   # 30% from intermediate layers, 70% from final
+    interctc_layer_idx: [4,8,12]
+    interctc_use_conditioning: true  # feed CTC dist back into encoder
+    interctc_ctc_type: ortho          # use BPE ortho head at intermediate layers
+    ctc_aux_config:
+      vocab_file: ???
+      dropout_rate: 0.1

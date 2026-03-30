@@ -1,0 +1,48 @@
+# @package _global_
+
+# This config executes inference with PoWSM:
+# Set data field when calling
+# eg. python src/main.py experiment=inference/transcribe_powsm data=doreco task_name=inf_doreco_powsm
+
+defaults:
+  - override /logger: csv
+  - override /model: null
+  - override /model/net: null
+
+task_name: ??? # pass inf_<data>_<model> when calling. This will create output dirs accordingly
+tags: ["powsm","inference"]
+
+seed: 42
+
+train: false
+test: false
+distributed_predict: True
+
+inference:
+  num_workers: 10 # number of parallel workers for distributed inference, 25 for 90GB gpu
+  passthrough_keys: ["target", "split", "utt_id", "metadata_idx", "lang_sym"]
+  out_file: ${paths.output_dir}/transcription.json
+  # an object (or fn that creates such an object) with __call__ method to transcribe single speech
+  inference_runner:
+    _target_: src.model.powsm.powsm_inference.build_powsm_inference
+    work_dir: ${paths.cache_dir}/powsm
+    hf_repo: espnet/powsm
+    force_download: False
+    config_file: null
+    model_file: null
+    bpemodel: null
+    stats_file: null
+    device: cuda # auto, cpu, cuda
+    beam_size: 5
+    ctc_weight: 0.3
+    penalty: 0.0
+    nbest: 1
+    normalize_length: False
+    maxlenratio: 0.0
+    minlenratio: 0.0
+  # additional args to pass to the __call__ method of inference_runner, 
+  # but can be overridden by keys from dataset if needed
+  inference_call_args: 
+    text_prev: <na>
+    lang_sym: <unk>
+    task_sym: <pr>

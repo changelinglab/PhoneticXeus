@@ -1,0 +1,7 @@
+_target_: src.model.powsm.powsm_model.build_powsm
+work_dir: ${paths.cache_dir}/powsm
+hf_repo: espnet/powsm
+# provide paths to override from local files instead of HF repo
+config_file: null
+model_file: null
+stats_file: null

@@ -1,0 +1,46 @@
+# @package _global_
+
+# This config executes inference with Gemini:
+# Set data field when calling
+# eg. python src/main.py experiment=inference/transcribe_gemini data=cmul2arcticl1 task_name=inf_gemini_l2arctic
+#
+# Prompt config is loaded from configs/prompt/transcribe_ipa.yaml
+
+defaults:
+  - /prompt: transcribe_ipa
+  - override /logger: csv
+  - override /model: null
+  - override /model/net: null
+
+task_name: ??? # pass inf_<model>_<data> when calling. This will create output dirs accordingly
+tags: ["gemini","inference"]
+
+seed: 42
+
+train: false
+test: false
+distributed_predict: True
+
+inference:
+  num_workers: 1 # NOTE: Keep num_workers=1 to ensure cache_path/error_log_path writes happen in a single process
+  passthrough_keys: ["target", "split", "utt_id", "metadata_idx", "lang_sym"]
+  out_file: ${paths.output_dir}/transcription.jsonl
+  limit_samples: null  # Set to null for full run
+
+  inference_runner:
+    _target_: src.model.gemini.transcribe.GeminiInference
+    client_config:
+      model_name: "gemini-2.5-flash"
+      api_key: ${oc.env:GEMINI_API_KEY}
+      temperature: 1.0
+      top_p: 1.0
+      seed: ${seed}
+      thinking_budget: 0  # Set to 0 for non-thinking mode
+      retry_config:
+        max_retries: 3
+        initial_delay: 1.0
+        backoff_factor: 2.0
+    cache_key_field: "metadata_idx"
+    cache_path: "${paths.output_dir}/transcription.cache.jsonl"
+    error_log_path: "${paths.output_dir}/transcription.errors.jsonl"
+    resume: True

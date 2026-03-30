@@ -1,0 +1,34 @@
+# @package _global_
+
+# This config executes inference with XeusPR:
+# Set data field when calling
+# eg. python src/main.py experiment=inference/transcribe_xeuspr data=doreco task_name=inf_doreco_xeuspr
+
+defaults:
+  - override /logger: csv
+  - override /model: null
+  - override /model/net: null
+
+task_name: ??? # pass inf_<data>_<model> when calling. This will create output dirs accordingly
+tags: ["xeuspr","inference"]
+
+seed: 42
+
+train: false
+test: false
+distributed_predict: True
+
+inference:
+  num_workers: 2 # number of parallel workers for distributed inference, 3 for 90GB gpu
+  passthrough_keys: ["target", "split", "utt_id", "metadata_idx", "lang_sym"]
+  out_file: ${paths.output_dir}/transcription.json
+  # an object (or fn that creates such an object) with __call__ method to transcribe single speech utt
+  inference_runner:
+    _target_: src.model.xeusphoneme.builders.build_xeus_pr_inference
+    work_dir: ${paths.cache_dir}/xeus
+    checkpoint: exp/runs/train_ipapack_xeuspr/20251225_221757/checkpoints/step_030000.ckpt
+    vocab_file: src/model/xeusphoneme/resources/ipa_vocab.json
+    hf_repo: espnet/xeus
+    force_download: False
+    config_file: null
+    device: cuda # auto, cpu, cuda

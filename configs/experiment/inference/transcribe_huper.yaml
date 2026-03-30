@@ -1,0 +1,30 @@
+# @package _global_
+
+# This config executes inference with HuPER:
+# Set data field when calling
+# eg. python src/main.py experiment=inference/transcribe_huper data=powsmeval data.dataset_name=gmuaccent +inference.limit_samples=10 run_folder=test_huper task_name=testhuper
+
+defaults:
+  - override /logger: csv
+  - override /model: null
+  - override /model/net: null
+
+task_name: ??? # pass inf_<data>_<model> when calling. This will create output dirs accordingly
+tags: ["huper","inference"]
+
+seed: 42
+
+train: false
+test: false
+distributed_predict: True
+
+inference:
+  num_workers: 4 # number of parallel workers for distributed inference, set acc to gpu memory
+  passthrough_keys: ["target", "split", "utt_id", "metadata_idx", "lang_sym"]
+  out_file: ${paths.output_dir}/transcription.json
+  # an object (or fn that creates such an object) with __call__ method to transcribe single speech
+  inference_runner:
+    _target_: src.model.huper.builders.build_huper_inference
+    hf_repo: huper29/huper_recognizer
+    device: cuda # auto, cpu, cuda
+    dtype: float32

@@ -1,0 +1,59 @@
+# --------- pytorch --------- #
+--extra-index-url https://download.pytorch.org/whl/cu126
+torch==2.6.0
+torchaudio==2.6.0
+torchvision==0.21.0
+lightning>=2.0.0
+torchmetrics>=0.11.4
+
+# --------- hydra --------- #
+hydra-core==1.3.2
+hydra-colorlog==1.2.0
+hydra-optuna-sweeper==1.2.0
+
+# --------- loggers --------- #
+# wandb
+# neptune-client
+# mlflow
+# comet-ml
+# aim>=3.16.2  # no lower than 3.16.2, see https://github.com/aimhubio/aim/issues/2550
+
+# --------- others --------- #
+rootutils       # standardizing the project root setup
+pre-commit      # hooks for applying linters on commit
+rich            # beautiful text formatting in terminal
+pytest          # tests
+# sh            # for running bash commands in some tests (linux/macos only)
+
+# espnet==202509
+git+https://github.com/Shikhar-S/espnet.git@flashattn
+
+huggingface_hub==0.35.3
+# datasets==4.4.1
+datasets==3.6.0 # to avoid torchcodec issues
+pyarrow==22.0.0
+pandas
+transformers
+phonemizer==3.3.0
+flashlight-text==0.0.7
+pytest-mock==3.15.1
+git+https://github.com/changelinglab/phone-inventory-metric@v0.2.4
+
+# OPTIONAL
+wandb==0.22.1
+buckeye==1.3
+panphon==0.22.2
+rapidfuzz==3.14.3
+deepspeed==0.18.6
+
+# ZIPA
+lhotse==1.32.1
+
+# viz
+matplotlib
+seaborn
+
+#easycall
+ipatok==0.1.0
+epitran==1.34.0
+tensorboard

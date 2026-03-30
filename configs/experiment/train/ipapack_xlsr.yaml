@@ -1,0 +1,76 @@
+# @package _global_
+#
+# Smoke-test:
+#   python src/main.py experiment=train/ipapack_xlsr logger=csv \
+#       trainer.max_steps=100 trainer.val_check_interval=10 run_folder=test
+#
+# Full run (2-GPU example):
+#   python src/main.py experiment=train/ipapack_xlsr run_folder=xlsr53_full \
+#       trainer.devices=2
+
+defaults:
+  - override /data: null
+  - override /model: phone_recognition
+  - override /model/net: xlsrpr
+  - override /trainer: ddp
+  - override /callbacks: default
+  - override /logger: wandb
+
+task_name: ipapack_xlsr
+tags: ["ipapack", "ctc", "phone_recognition", "xlsr53"]
+
+seed: 42
+
+trainer:
+  devices: -1
+  strategy: ddp_find_unused_parameters_true
+  min_epochs: 0
+  max_epochs: -1
+  max_steps: 40000
+  gradient_clip_val: 1.0
+  accumulate_grad_batches: 1
+  val_check_interval: 2000
+  check_val_every_n_epoch: null
+  log_every_n_steps: 200
+
+data:
+  _target_: src.data.kaldi_pretraining_dataset.build_kaldi_pretraining_datamodule
+  train_split: "train"
+  dev_splits: ["dev_1k", "dev_gmuaccent", "dev_buckeye", "dev_epadb", "dev_speechoceanotth", "dev_l2arctic"]
+  dataset_config_path: configs/data/ipapack_index.yaml
+  vocab_file: ${model.net.vocab_file}
+  batch_size: 80
+  num_workers: 6
+
+model:
+  dev_splits: ${data.dev_splits}
+  optimizer:
+    lr: 0.000001 # 1e-6
+  scheduler:
+    _target_: src.recipe.phone_recognition.model_module.get_w2v2ph_schedule
+    _partial_: true
+    num_training_steps: ${trainer.max_steps}
+    encoder_unfreeze_step: 0
+    warmup_fraction: 0.0
+    constant_fraction: 1.0
+
+callbacks:
+  model_checkpoint:
+    monitor: null
+    auto_insert_metric_name: False
+    mode: "min"
+    save_top_k: -1
+    filename: "checkpoint-{step}"
+    save_last: True
+    every_n_epochs: null
+    every_n_train_steps: ${trainer.val_check_interval}
+  early_stopping: null
+  learning_rate_monitor:
+    logging_interval: "step"
+
+logger:
+  wandb:
+    tags: ${tags}
+    group: ${task_name}
+    project: "SSLPR"
+    name: ${run_folder}

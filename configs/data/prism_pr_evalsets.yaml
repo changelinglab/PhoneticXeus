@@ -1,0 +1,126 @@
+# Dataset configuration
+data_root: ${oc.env:IPAPACK_DATA_ROOT}
+sampling_rate: 16000
+
+datasets:  
+  # OUT OF DOMAIN DATASETS
+  doreco:
+    wav_scp: "test_doreco/wav.scp"
+    text_phoneme: "test_doreco/text.good"
+    language: "test_doreco/text.lang"
+  
+  gmuaccent:
+    wav_scp: "test_gmuaccent/wav.scp"
+    text_phoneme: "test_gmuaccent/text.good"
+    language: "test_gmuaccent/text.lang"
+
+  l2arctic_perceived:
+    wav_scp: "test_l2arctic_perceived/wav.scp"
+    text_phoneme: "test_l2arctic_perceived/text.good"
+    language: "test_l2arctic_perceived/text"
+  
+  timit:
+    wav_scp: "test_timit/wav.scp"
+    text_phoneme: "test_timit/text.good"
+    language: "test_timit/text.lang"
+  
+  tusom2021:
+    wav_scp: "test_tusom2021/wav.scp"
+    text_phoneme: "test_tusom2021/text.good"
+    language: "test_tusom2021/text"
+  
+  voxangeles:
+    wav_scp: "test_voxangeles/wav.scp"
+    text_phoneme: "test_voxangeles/text.good"
+    language: "test_voxangeles/text"
+
+  # IN DOMAIN DATASETS (IPAPACK++)
+  aishell:
+    wav_scp: "${data_root}/dump/raw/test_aishell/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_aishell/text.good"
+    language: "${data_root}/dump/raw/test_aishell/text"
+  
+  buckeye:
+    wav_scp: "${data_root}/dump/raw/test_buckeye/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_buckeye/text.good"
+    language: "${data_root}/dump/raw/test_buckeye/text"
+  
+  cv:
+    wav_scp: "${data_root}/dump/raw/test_cv/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_cv/text.good"
+    language: "${data_root}/dump/raw/test_cv/text"
+  
+  epadb:
+    wav_scp: "${data_root}/dump/raw/test_epadb/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_epadb/text.good"
+    language: "${data_root}/dump/raw/test_epadb/text"
+  
+  fleurs:
+    wav_scp: "${data_root}/dump/raw/test_fleurs/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_fleurs/text.good"
+    language: "${data_root}/dump/raw/test_fleurs/text"
+  
+  fleurs_indv:
+    wav_scp: "${data_root}/dump/raw/test_fleurs_indv/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_fleurs/text.good" # !!different!!
+    language: "${data_root}/dump/raw/test_fleurs/text"
+  
+  kazakh:
+    wav_scp: "${data_root}/dump/raw/test_kazakh/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_kazakh/text.good"
+    language: "${data_root}/dump/raw/test_kazakh/text"
+  
+  librispeech:
+    wav_scp: "${data_root}/dump/raw/test_librispeech/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_librispeech/text.good"
+    language: "${data_root}/dump/raw/test_librispeech/text"
+  
+  mls_dutch:
+    wav_scp: "${data_root}/dump/raw/test_mls_dutch/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_mls_dutch/text.good"
+    language: "${data_root}/dump/raw/test_mls_dutch/text"
+  
+  mls_french:
+    wav_scp: "${data_root}/dump/raw/test_mls_french/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_mls_french/text.good"
+    language: "${data_root}/dump/raw/test_mls_french/text"
+  
+  mls_german:
+    wav_scp: "${data_root}/dump/raw/test_mls_german/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_mls_german/text.good"
+    language: "${data_root}/dump/raw/test_mls_german/text"
+  
+  mls_italian:
+    wav_scp: "${data_root}/dump/raw/test_mls_italian/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_mls_italian/text.good"
+    language: "${data_root}/dump/raw/test_mls_italian/text"
+  
+  mls_polish:
+    wav_scp: "${data_root}/dump/raw/test_mls_polish/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_mls_polish/text.good"
+    language: "${data_root}/dump/raw/test_mls_polish/text"
+  
+  mls_portuguese:
+    wav_scp: "${data_root}/dump/raw/test_mls_portuguese/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_mls_portuguese/text.good"
+    language: "${data_root}/dump/raw/test_mls_portuguese/text"
+  
+  mls_spanish:
+    wav_scp: "${data_root}/dump/raw/test_mls_spanish/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_mls_spanish/text.good"
+    language: "${data_root}/dump/raw/test_mls_spanish/text"
+  
+  southengland:
+    wav_scp: "${data_root}/dump/raw/test_southengland/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_southengland/text.good"
+    language: "${data_root}/dump/raw/test_southengland/text"
+  
+  speechoceannotth:
+    wav_scp: "${data_root}/dump/raw/test_speechoceannotth/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_speechoceannotth/text.good"
+    language: "${data_root}/dump/raw/test_speechoceannotth/text"
+  
+  tamil:
+    wav_scp: "${data_root}/dump/raw/test_tamil/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/test_tamil/text.good"
+    language: "${data_root}/dump/raw/test_tamil/text"

@@ -1,0 +1,7 @@
+_target_: src.model.wav2vec2.builders.build_wav2vec2pr
+hf_repo: facebook/wav2vec2-large-xlsr-53
+vocab_file: src/model/xeusphoneme/resources/ipa_vocab.json
+ctc_config:
+  ctc_type: builtin
+freeze_frontend: true    # keep CNN feature extractor frozen
+weighted_sum: false

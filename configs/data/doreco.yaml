@@ -1,0 +1,8 @@
+_target_: src.data.kaldi_dataset.build_kaldi_datamodule
+dataset_name: doreco
+# data_dir: ${paths.download_dir} # test_doreco should be at this level
+# data_dir: path/to/download  # alternative data directory
+data_dir: ${oc.env:IPAPACK_DATA_ROOT}/dump/raw
+portable_wavscp: False
+batch_size: 32
+num_workers: 1

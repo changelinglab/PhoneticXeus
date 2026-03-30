@@ -1,0 +1,20 @@
+defaults:
+  - default
+
+accelerator: gpu
+num_nodes: 1
+devices: -1
+precision: bf16-true
+sync_batchnorm: True # for multi-gpu or batchnorm
+strategy:
+  _target_: lightning.pytorch.strategies.DeepSpeedStrategy
+  stage: 2
+  offload_optimizer: false
+  offload_parameters: false
+  # reduce mem fragmentation
+  contiguous_gradients: true
+  overlap_comm: true
+  reduce_scatter: true
+  # on oom lower these to 2e8 or 1e8.
+  allgather_bucket_size: 5e8
+  reduce_bucket_size: 5e8

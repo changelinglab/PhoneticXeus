@@ -1,0 +1,34 @@
+#!/bin/bash
+# Customize SBATCH directives for your cluster
+#SBATCH -A YOUR_ACCOUNT
+#SBATCH -p YOUR_PARTITION
+#SBATCH -J main
+#SBATCH -N 1                       # Default to 1, override via CLI
+#SBATCH --ntasks-per-node=1        # Matches number of GPUs per node
+#SBATCH --gpus-per-node=1
+#SBATCH -c 72                      # CPUs per task
+#SBATCH --mem=120G                 # Slurm treats this as memory per node
+#SBATCH -t 2:00:00
+#SBATCH -o exp/slurm_logs/%j.out
+#SBATCH -e exp/slurm_logs/%j.out
+
+# === Directory Setup ===
+cd "${SLURM_SUBMIT_DIR:-.}"
+mkdir -p "exp/slurm_logs"
+# === Environment setup ===
+source .venv/bin/activate
+echo "Environment setup complete."
+
+export PHONEMIZER_ESPEAK_LIBRARY="${PHONEMIZER_ESPEAK_LIBRARY:?Set PHONEMIZER_ESPEAK_LIBRARY}"
+export ESPEAK_DATA_PATH="${ESPEAK_DATA_PATH:?Set ESPEAK_DATA_PATH}"
+
+export NCCL_DEBUG=INFO
+export PYTHONFAULTHANDLER=1
+export HYDRA_FULL_ERROR=1
+export NCCL_SOCKET_IFNAME=hsn
+module load nccl
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
+echo "Running on $SLURM_JOB_NUM_NODES nodes with $SLURM_GPUS_ON_NODE GPUs per node. Tasks= $SLURM_NTASKS"
+
+srun python src/main.py "$@"

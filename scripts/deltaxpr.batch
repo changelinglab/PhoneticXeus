@@ -1,0 +1,23 @@
+#!/bin/bash
+# Customize SBATCH directives for your cluster
+#SBATCH -A YOUR_ACCOUNT
+#SBATCH -p YOUR_PARTITION
+#SBATCH -J main
+#SBATCH -N 1
+#SBATCH --gpus-per-node=1
+#SBATCH -c 16
+#SBATCH --mem=62G
+#SBATCH -t 2:00:00
+#SBATCH -o exp/slurm_logs/%A_%a.out
+#SBATCH -e exp/slurm_logs/%A_%a.out
+
+# === Directory Setup ===
+cd "${SLURM_SUBMIT_DIR:-.}"
+mkdir -p "exp/slurm_logs"
+# === Environment setup ===
+source .venv/bin/activate
+# espeak-ng (needed for wav2vec2-phoneme models)
+export PHONEMIZER_ESPEAK_LIBRARY="${PHONEMIZER_ESPEAK_LIBRARY:?Set PHONEMIZER_ESPEAK_LIBRARY}"
+export ESPEAK_DATA_PATH="${ESPEAK_DATA_PATH:?Set ESPEAK_DATA_PATH}"
+###########################
+python src/main.py "$@"

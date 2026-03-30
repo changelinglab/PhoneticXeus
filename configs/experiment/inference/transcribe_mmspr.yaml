@@ -1,0 +1,30 @@
+# @package _global_
+
+# This config executes inference with MMS-300m fine-tuned for phone recognition.
+# Set data field when calling:
+# eg. python src/main.py experiment=inference/transcribe_mmspr data=powsmeval data.dataset_name=buckeye task_name=inf_buckeye_mmspr
+
+defaults:
+  - override /logger: csv
+  - override /model: null
+  - override /model/net: null
+
+task_name: ??? # pass inf_<data>_<model> when calling. This will create output dirs accordingly
+tags: ["mmspr", "inference"]
+
+seed: 42
+
+train: false
+test: false
+distributed_predict: True
+
+inference:
+  num_workers: 4
+  passthrough_keys: ["target", "split", "utt_id", "metadata_idx", "lang_sym"]
+  out_file: ${paths.output_dir}/transcription.json
+  inference_runner:
+    _target_: src.model.wav2vec2.builders.build_wav2vec2pr_inference
+    hf_repo: facebook/mms-300m
+    vocab_file: src/model/xeusphoneme/resources/ipa_vocab.json
+    checkpoint: ???  # pass inference.inference_runner.checkpoint=<path> when calling
+    device: cuda

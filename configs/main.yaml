@@ -1,0 +1,44 @@
+# @package _global_
+
+# order of defaults determines the order in which configs override each other
+# all configs can be overridden from command line, e.g. `python src/main.py debug=default)
+defaults:
+  - _self_
+  - model: ??? # must be defined in experiment config
+  - model/net: ???
+  - data: ???
+  - optional data/tokenizer: null # some exp do not need a tokenizer
+  - trainer: default
+  - paths: default
+  - logger: csv
+  - callbacks: default
+  - extras: default
+  - hydra: default
+  # experiment configs allow for reproducibility with specific hyperparameters
+  - experiment: null
+  - hparams_search: null # config for hyperparameter optimization
+  # optional local config for machine/user specific settings
+  # it's optional since it doesn't need to exist and is excluded from version control
+  - optional local: default
+  - debug: null # debugging config
+
+# task name, determines output directory path
+task_name: "train"
+
+# tags to help you identify your experiments
+# you can overwrite this in experiment configs
+# overwrite from command line with `python src/main.py tags="[first_tag, second_tag]"`
+tags: ["dev"]
+
+train: True # set False to skip model training
+# evaluate on test set, using best model weights achieved during training
+# lightning chooses best weights based on the metric specified in checkpoint callback
+test: True
+# prediction stage runs if 'predict' is True or 'pred_file' is not None
+predict: False # run prediction on new/unseen data
+pred_file: null # path to write predictions to
+
+run_folder: ${now:%Y%m%d}_${now:%H%M%S}
+# useful to resume training from a checkpoint path
+ckpt_path: null
+seed: 42 # pytorch, numpy and python.random

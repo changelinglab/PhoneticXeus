@@ -1,0 +1,109 @@
+data_root: ${oc.env:IPAPACK_DATA_ROOT}
+sampling_rate: 16000
+
+datasets:
+#############################################################################################################
+  # pr_fixed splits
+  train:
+    wav_scp: "${data_root}/dump/raw/train_fixed/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/train_fixed/text.ctc"
+    language: "${data_root}/dump/raw/train_fixed/text"
+    accent: "${data_root}/exp/data/tags/train_fixed_all.accent.shard0.jsonl"
+    task_set: ["pr"]
+
+  train_1k:
+    wav_scp: "${data_root}/dump/raw/train_1k_fixed_1task/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/train_1k_fixed_1task/text.ctc"
+    language: "${data_root}/dump/raw/train_1k_fixed_1task/text"
+    task_set: ["pr"]
+    
+  # accentmix_multi splits
+  # eng_us     835233
+  # eng_other  451793
+  # multi_mid  6921146  (langs=45)
+  # multi_low  90110  (langs=40)
+  train_accentmix_multi: # around 1M total
+    wav_scp:
+      ${data_root}/exp/data/train_fixed_all_partitions/wav.eng_other.scp: 451793
+      ${data_root}/exp/data/train_fixed_all_partitions/wav.eng_us.scp: 400000
+      ${data_root}/exp/data/train_fixed_all_partitions/wav.multi_mid.scp: 74000
+      ${data_root}/exp/data/train_fixed_all_partitions/wav.multi_low.scp: 74000
+    text_phoneme: "${data_root}/exp/data/train_fixed_all_partitions/text.ctc"
+    language: "${data_root}/exp/data/train_fixed_all_partitions/text"
+    accent: "${data_root}/exp/data/tags/train_fixed_all.accent.shard0.jsonl"
+    task_set: ["pr"]
+
+  train_accentmix_en: # around 850k total
+    wav_scp: 
+      ${data_root}/exp/data/train_fixed_all_partitions/wav.eng_other.scp: 451793
+      ${data_root}/exp/data/train_fixed_all_partitions/wav.eng_us.scp: 400000
+    text_phoneme: "${data_root}/exp/data/train_fixed_all_partitions/text.ctc"
+    language: "${data_root}/exp/data/train_fixed_all_partitions/text"
+    accent: "${data_root}/exp/data/tags/train_fixed_all.accent.shard0.jsonl"
+    task_set: ["pr"]
+
+  huper_librispeech:
+    wav_scp: "exp/data/huper_librispeech/wav.scp"
+    text_phoneme: "exp/data/huper_librispeech/text.ctc"
+    language: "exp/data/huper_librispeech/text"
+    task_set: [] # donot add task set, else code skips this dataset
+
+  # TIMIT (run timit_data_prep then: python -m src.recipe.phone_recognition.local.timit_to_kaldi --timit_root ... --metadata_dir ... --out_dir ...)
+  train_timit:
+    wav_scp: "exp/data/timit/train_timit/wav.scp"
+    text_phoneme: "exp/data/timit/train_timit/text.ctc"
+    language: "exp/data/timit/train_timit/text"
+    task_set: [] # donot add task set, else code skips this dataset
+
+  dev_timit:
+    wav_scp: "exp/data/timit/val_timit/wav.scp"
+    text_phoneme: "exp/data/timit/val_timit/text.ctc"
+    language: "exp/data/timit/val_timit/text"
+    task_set: [] # donot add task set, else code skips this dataset
+
+  test_timit:
+    wav_scp: "exp/data/timit/test_timit/wav.scp"
+    text_phoneme: "exp/data/timit/test_timit/text.ctc"
+    language: "exp/data/timit/test_timit/text"
+    task_set: [] # donot add task set, else code skips this dataset
+
+#############################################################################################################
+
+  dev_1k:
+    wav_scp: "${data_root}/dump/raw/dev_1k_fixed/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/dev_1k_fixed/text.ctc"
+    language: "${data_root}/dump/raw/dev_1k_fixed/text"
+    task_set: ["pr"]
+  
+  dev_gmuaccent:
+    wav_scp: "${data_root}/exp/data/devsets/gmuaccent.scp"
+    text_phoneme: "${data_root}/dump/raw/test_gmuaccent/text.good"
+    language: "${data_root}/dump/raw/test_gmuaccent/text.lang"
+  
+  dev_buckeye:
+    wav_scp: "${data_root}/exp/data/devsets/buckeye.scp"
+    text_phoneme: "${data_root}/dump/raw/test_buckeye/text.good"
+    language: "${data_root}/dump/raw/test_buckeye/text"
+  
+  dev_epadb:
+    wav_scp: "${data_root}/exp/data/devsets/epadb.scp"
+    text_phoneme: "${data_root}/dump/raw/test_epadb/text.good"
+    language: "${data_root}/dump/raw/test_epadb/text"
+  
+  dev_speechoceanotth:
+    wav_scp: "${data_root}/exp/data/devsets/speechoceannotth.scp"
+    text_phoneme: "${data_root}/dump/raw/test_speechoceannotth/text.good"
+    language: "${data_root}/dump/raw/test_speechoceannotth/text"
+  
+  dev_l2arctic:
+    wav_scp: "${data_root}/exp/data/devsets/l2arctic.scp"
+    text_phoneme: "${data_root}/dump/raw/test_l2arctic_perceived/text.good"
+    language: "${data_root}/dump/raw/test_l2arctic_perceived/text"
+ 
+ #############################################################################################################
+  
+  predict:
+    wav_scp: "${data_root}/dump/raw/dev_1k_fixed/wav.scp"
+    text_phoneme: "${data_root}/dump/raw/dev_1k_fixed/text.ctc"
+    language: "${data_root}/dump/raw/dev_1k_fixed/text"
+    task_set: ["pr"]

@@ -1,0 +1,45 @@
+# @package _global_
+
+# This config executes phoneme recognition inference 
+# python src/main.py experiment=inference/vaani_powsmpr
+
+defaults:
+  - override /logger: csv
+  - override /data: vaanigeo
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+task_name: "vaani_powsmpr"
+tags: ["vaani_powsmpr"]
+
+seed: 42
+
+distributed_predict: True
+
+inference:
+  num_workers: 1 # number of parallel workers for distributed inference
+  passthrough_keys: ["latitude","longitude", "split", "metadata_idx"] # keys from dataset to be passed to output
+  out_file: ${paths.output_dir}/vaani_powsmpr.json
+  # an object (or fn that creates such an object) with __call__ method to transcribe single speech
+  inference_runner:
+    _target_: src.model.powsm.powsm_inference.build_powsm_inference
+    work_dir: ${paths.cache_dir}/powsm
+    hf_repo: espnet/powsm
+    force_download: False
+    config_file: null
+    model_file: null
+    bpemodel: null
+    stats_file: null
+    device: cuda # auto, cpu, cuda
+    beam_size: 5
+    ctc_weight: 0.3
+    penalty: 0.0
+    nbest: 1
+    normalize_length: False
+    maxlenratio: 0.0
+    minlenratio: 0.0
+  # additional args to pass to the __call__ method of inference_runner, but can be overridden by keys from dataset
+  inference_call_args: 
+    text_prev: <na>
+    lang_sym: <unk>
+    task_sym: <pr>

@@ -1,0 +1,57 @@
+# @package _global_
+
+# Joint CTC+Attention beam-search inference with XeusPR.
+# The checkpoint must have been trained with a TransformerDecoder
+# (e.g. experiment=train/timit_xeuspr_joint).
+#
+# Example:
+# python src/main.py \
+#   experiment=inference/transcribe_xeuspr_joint \
+#   data=powsmeval data.dataset_name=buckeye \
+#   task_name=test run_folder=test \
+#   inference.inference_runner.checkpoint=path/to/checkpoints/checkpoint.ckpt +inference.limit_samples=10
+
+defaults:
+  - override /logger: csv
+  - override /model: null
+  - override /model/net: null
+
+task_name: ??? # pass inf_<data>_<model> when calling
+tags: ["xeuspr", "joint_ctc_att", "inference"]
+
+train: false
+test: false
+distributed_predict: True
+
+inference:
+  num_workers: 2  # beam search is heavier than greedy CTC
+  passthrough_keys: ["target", "split", "utt_id", "metadata_idx", "lang_sym"]
+  out_file: ${paths.output_dir}/transcription.json
+  inference_runner:
+    _target_: src.model.xeusphoneme.xeuspr_joint_inference.build_xeus_pr_joint_inference
+    work_dir: ${paths.cache_dir}/xeus
+    checkpoint: ???  # must be passed on command line
+    vocab_file: src/model/xeusphoneme/resources/ipa_vocab.json
+    hf_repo: espnet/xeus
+    force_download: false
+    config_file: null
+    device: cuda
+    beam_size: 5
+    ctc_weight: 0.3        # beam-search CTC fraction (not the training loss weight)
+    penalty: 0.0
+    maxlenratio: 0.0
+    minlenratio: 0.0
+    normalize_length: false
+    decoder_config:
+      attention_heads: 16 # xeus feat = 4096
+      linear_units: 4096 # follow owsm 1B
+      num_blocks: 2
+      dropout_rate: 0.1
+      positional_dropout_rate: 0.1
+      self_attention_dropout_rate: 0.1
+      src_attention_dropout_rate: 0.1
+      input_layer: embed
+      use_output_layer: true
+      normalize_before: true
+    # Net architecture params (decoder_config, ctc_config, interctc_*, weighted_sum)
+    # are auto-loaded from the checkpoint's net_config. Override here if needed.

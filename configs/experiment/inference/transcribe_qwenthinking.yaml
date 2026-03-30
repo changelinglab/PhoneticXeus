@@ -1,0 +1,71 @@
+# @package _global_
+
+# Usage: 
+# python src/main.py experiment=inference/transcribe_qwenthinking data=cmul2arcticl1 task_name=inf_qwenthinking_l2arctic
+
+defaults:
+  - override /logger: csv
+  - override /model: null
+  - override /model/net: null
+
+task_name: ??? 
+tags: ["qwenthinking", "inference", "vllm"]
+
+seed: 42
+
+train: false
+test: false
+distributed_predict: True
+
+inference:
+  # vLLM handles concurrency well. You can increase this (e.g., 4 or 8) 
+  num_workers: 4
+  port: ??  # Each worker will use PORT
+  passthrough_keys: ["target", "split", "utt_id", "metadata_idx", "lang_sym"]
+  out_file: ${paths.output_dir}/transcription.json
+  limit_samples: null
+  inference_runner:
+    _target_: src.model.qwen.inference.VllmInference
+    device: cpu
+    client_config:
+      base_url: "http://localhost:${inference.port}/v1" # change dynamically
+      model_name: "Qwen/Qwen3-Omni-30B-A3B-Thinking"
+      api_key: "EMPTY"  # vLLM doesn't require a real key
+      temperature: 0.0
+      top_p: 0.95
+      max_tokens: 2048
+
+    prompt_config:
+      system_prompt: |
+        ### Role
+        You are an expert phonetician and linguist specializing in acoustic phonetics. Your auditory perception is calibrated to detect subtle nuances in articulation, stress, and intonation.
+
+        ### Task
+        Listen to the provided audio clip and transcribe the speech into standard International Phonetic Alphabet (IPA) symbols.
+
+        ### Guidelines for Accuracy
+        1.  **Analyze Context:** Implicitly identify the speaker's accent/dialect to ensure vowel qualities are accurate.
+        2.  **Resolve Ambiguity:** If a sound is unclear, use your linguistic expertise to determine the single most probable phoneme. Do not provide alternatives.
+        3.  **Strict IPA:** Use standard IPA notation only.
+
+        ### Output Format & Schema Adherence
+        -   **Strict Adherence:** You must generate the output following the defined schema structure exactly.
+        -   **Pure Data:** Return raw data only. Do NOT use Markdown code blocks (e.g., ```json), and do not include any conversational filler.
+        -   **Field `transcription`:**
+            -   Must contain **EXACTLY ONE** string sequence of IPA symbols.
+            -   No slashes `/` or brackets `[]`.
+            -   Example: "həˈləʊ" (Correct) / "/həˈləʊ/" (Incorrect)
+
+        Analyze the audio and produce the output now.
+      user_prompt_template: "Please transcribe the attached audio. I need a clear mapping of the speech to International Phonetic Alphabet (IPA) symbols."
+    
+    # Instruct models usually return plain text. 
+    # Set this if you forced JSON in the prompt, otherwise leave null.
+    output_key: null  
+    clean_response: True
+    cache_key_field: "utt_id"
+    cache_path: ${paths.cache_dir}/qwenthinking/${task_name}.cache.jsonl
+    error_log_path: ${paths.cache_dir}/qwenthinking/${task_name}.errors.jsonl
+    resume: True
+    timeout: 600.0
+    save_thoughts: True # if we want to save model "thoughts" for analysis

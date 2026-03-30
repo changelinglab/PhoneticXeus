@@ -1,0 +1,96 @@
+[project]
+name = "phoneticxeus"
+version = "0.1.0"
+requires-python = "==3.10.*"
+dependencies = [
+    # pytorch
+    "torch==2.6.0",
+    "torchaudio==2.6.0",
+    "torchvision==0.21.0",
+    "lightning==2.6.0",
+    "torchmetrics>=0.11.4",
+    # hydra
+    "hydra-core==1.3.2",
+    "hydra-colorlog==1.2.0",
+    "hydra-optuna-sweeper==1.2.0",
+    # common utils
+    "rootutils",
+    "rich",
+    "pytest",
+    "pre-commit",
+    "pytest-mock==3.15.1",
+    "pandas",
+    "transformers",
+    "phonemizer==3.3.0",
+    "flashlight-text==0.0.7",
+    "huggingface_hub==0.35.3",
+    "datasets==3.6.0",
+    "pyarrow==22.0.0",
+    "wandb==0.22.1",
+    "buckeye==1.3",
+    "panphon==0.22.2",
+    "rapidfuzz==3.14.3",
+    "deepspeed==0.18.6",
+    "lhotse==1.32.1",
+    "ipatok==0.1.0",
+    "epitran==1.34.0",
+    "tensorboard",
+    "matplotlib",
+    "seaborn",
+    "phone-inventory-metric @ git+https://github.com/changelinglab/phone-inventory-metric@v0.2.5",
+]
+
+[project.optional-dependencies]
+# Delta / Babel (x86_64)
+x86 = [
+    "humanfriendly",
+    "torch-complex",
+    "h5py",
+    "kaldiio",
+    "g2p-en",
+    "jamo",
+    "espnet-tts-frontend",
+    "jaconv",
+    "scipy",
+    "google-genai==1.54.0",
+    "k2==1.24.4.dev20250715+cuda12.6.torch2.6.0",
+    "kaldialign",
+    "sortedcontainers==2.4.0",
+]
+# Delta-AI (aarch64) — flash-attn must be installed separately (see setup.sh)
+
+[tool.black]
+line-length = 80
+
+[tool.uv]
+extra-index-url = ["https://download.pytorch.org/whl/cu126"]
+find-links = ["https://k2-fsa.github.io/k2/cuda.html"]
+index-strategy = "unsafe-best-match"
+link-mode = "copy"
+cache-dir = ".uv_cache"
+
+[tool.pytest.ini_options]
+addopts = [
+  "--color=yes",
+  "--durations=0",
+  "--strict-markers",
+  "--doctest-modules",
+]
+filterwarnings = [
+  "ignore::DeprecationWarning",
+  "ignore::UserWarning",
+]
+log_cli = "True"
+markers = [
+  "slow: slow tests",
+]
+minversion = "6.0"
+testpaths = "tests/"
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: nocover",
+    "raise NotImplementedError",
+    "raise NotImplementedError()",
+    "if __name__ == .__main__.:",
+]

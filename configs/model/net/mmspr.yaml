@@ -1,0 +1,3 @@
+_target_: src.model.wav2vec2.builders.build_wav2vec2pr
+hf_repo: facebook/mms-300m
+vocab_file: src/model/xeusphoneme/resources/ipa_vocab.json

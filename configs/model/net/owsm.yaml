@@ -1,0 +1,7 @@
+_target_: src.model.powsm.powsm_model.build_powsm
+work_dir: ${paths.cache_dir}/owsm
+hf_repo: espnet/owsm_v3
+# provide paths to override from local files instead of HF repo
+config_file: ${model.net.work_dir}/exp/s2t_train_s2t_transformer_conv2d_size1024_e24_d24_lr2.5e-4_warmup10k_finetune_raw_bpe50000/config.yaml
+model_file: ${model.net.work_dir}/exp/s2t_train_s2t_transformer_conv2d_size1024_e24_d24_lr2.5e-4_warmup10k_finetune_raw_bpe50000/valid.acc.ave_5best.till50epoch.pth
+stats_file: ${model.net.work_dir}/exp/s2t_stats_raw_bpe50000/train/feats_stats.npz

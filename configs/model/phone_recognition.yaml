@@ -1,0 +1,11 @@
+_target_: src.recipe.phone_recognition.model_module.PhoneRecognitionModel
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.001
+  weight_decay: 0.0
+
+scheduler: null
+net: ???
+dev_splits: ???

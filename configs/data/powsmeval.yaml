@@ -1,0 +1,7 @@
+_target_: src.data.kaldi_dataset.build_kaldi_datamodule
+dataset_name: l2arctic_perceived
+dataset_config_path: configs/data/prism_pr_evalsets.yaml
+data_dir: ${oc.env:IPAPACK_DATA_ROOT}/dump/raw
+portable_wavscp: False
+num_workers: 1
+batch_size: 1

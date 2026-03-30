@@ -1,0 +1,6 @@
+_target_: src.model.wav2vec2phoneme.builders.build_wav2vec2phoneme_model
+hf_repo: ???
+# facebook/wav2vec2-lv-60-espeak-cv-ft
+# facebook/wav2vec2-xlsr-53-espeak-cv-ft
+# ctaguchi/wav2vec2-large-xlsr-japlmthufielta-ipa1000-ns
+# huper29/huper_recognizer

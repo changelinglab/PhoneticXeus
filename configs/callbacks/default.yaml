@@ -1,0 +1,23 @@
+defaults:
+  - model_checkpoint
+  - learning_rate_monitor
+  - early_stopping
+  - model_summary
+  - rich_progress_bar
+  - _self_
+
+model_checkpoint:
+  dirpath: ${paths.output_dir}/checkpoints
+  filename: "step_{step:06d}"
+  monitor: "val/loss"
+  mode: "min"
+  save_last: True
+  auto_insert_metric_name: False
+
+early_stopping:
+  monitor: "val/loss"
+  patience: 100
+  mode: "min"
+
+model_summary:
+  max_depth: 1

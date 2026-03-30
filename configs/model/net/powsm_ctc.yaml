@@ -1,0 +1,13 @@
+_target_: src.model.powsm.powsm_ctc_model.build_powsm_ctc
+work_dir: ${paths.cache_dir}/powsm_ctc
+hf_repo: null
+
+# Provide paths to local files
+config_file: null
+model_file: null
+stats_file: null
+
+# Default conditioning tokens used for PhoneticXeus probing/FA pipelines where
+# only `encode(speech, speech_lengths)` is called (no per-sample lang/task override).
+default_lang_sym: <unk>
+default_task_sym: <pr>
