@@ -248,7 +248,7 @@ class Speech2Text:
     def __init__(self, model, tokenizer=None, device="cpu", dtype="float32",
                  beam_size=20, maxlenratio=0.0,
                  lang_sym="<nolang>", task_sym="<asr>", **_):
-        self.model       = model.to(dtype=getattr(torch, dtype)).eval()
+        self.model       = model.to(device=device, dtype=getattr(torch, dtype)).eval()
         self.tokenizer   = tokenizer
         self.device      = device
         self.dtype       = dtype
@@ -290,7 +290,7 @@ class Speech2TextGreedySearch:
         task_sym="<asr>",
         **_,
     ):
-        s2t_model = model.to(dtype=getattr(torch, dtype)).eval()
+        s2t_model = model.to(device=device, dtype=getattr(torch, dtype)).eval()
         s2t_train_args = train_args
 
         if bpemodel is None:
