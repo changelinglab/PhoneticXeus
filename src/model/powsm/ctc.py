@@ -63,7 +63,9 @@ class CTC(torch.nn.Module):
 
             raise ImportError("brctc requires BayesRiskCTC which is not bundled here.")
         else:
-            raise ValueError(f'ctc_type must be "builtin" or "gtnctc": {self.ctc_type}')
+            raise ValueError(
+                f'ctc_type must be one of ["builtin", "builtin2"]: {self.ctc_type}'
+            )
 
         self.reduce = reduce
 
