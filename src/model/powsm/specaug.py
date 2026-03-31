@@ -4,7 +4,7 @@ from typing import Optional, Sequence, Union
 import math
 from typeguard import typechecked
 import torch
-from espnet_import.nets.pytorch_backend.nets_utils import pad_list
+from src.espnet_import.nets_utils import pad_list
 
 DEFAULT_TIME_WARP_MODE = "bicubic"
 

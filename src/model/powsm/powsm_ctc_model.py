@@ -262,17 +262,10 @@ def build_powsm_ctc(
         output_path=patched_cfg,
     )
 
-    try:
-        from espnet2.tasks.s2t_ctc import S2TTask
-    except Exception as e:  # pragma: no cover
-        raise RuntimeError(
-            "ESPnet is required for POWSM-CTC wrapper. Install dependencies (espnet==202509)."
-        ) from e
+    from src.espnet_import.minimal_s2t_inference_ctc import _build_model_from_file
 
     # Keep builder consistent with other PhoneticXeus nets: load on CPU by default.
-    model, train_args = S2TTask.build_model_from_file(
-        patched_cfg, mdl_path, device="cpu"
-    )
+    model, train_args = _build_model_from_file(patched_cfg, mdl_path, device="cpu")
     return PowsmCTCNet(
         model=model,
         training_args=train_args,

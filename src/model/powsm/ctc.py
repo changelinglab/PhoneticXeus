@@ -53,9 +53,7 @@ class CTC(torch.nn.Module):
             self.ctc_loss = torch.nn.CTCLoss(reduction="none")
 
         elif self.ctc_type == "gtnctc":
-            from espnet2.legacy.nets.pytorch_backend.gtn_ctc import GTNCTCLossFunction
-
-            self.ctc_loss = GTNCTCLossFunction.apply
+            raise ImportError("gtnctc requires gtn_ctc which is not bundled here.")
 
         elif self.ctc_type == "brctc":
             try:
@@ -63,11 +61,7 @@ class CTC(torch.nn.Module):
             except ImportError:
                 raise ImportError("You should install K2 to use Bayes Risk CTC")
 
-            from espnet2.asr.bayes_risk_ctc import BayesRiskCTC
-
-            self.ctc_loss = BayesRiskCTC(
-                brctc_risk_strategy, brctc_group_strategy, brctc_risk_factor
-            )
+            raise ImportError("brctc requires BayesRiskCTC which is not bundled here.")
         else:
             raise ValueError(f'ctc_type must be "builtin" or "gtnctc": {self.ctc_type}')
 

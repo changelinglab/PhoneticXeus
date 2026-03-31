@@ -15,14 +15,11 @@ import argparse
 import torch
 import torch.nn.functional as F
 import torchaudio
-from espnet2.torch_utils.device_funcs import force_gatherable
-from espnet_import.nets.pytorch_backend.nets_utils import make_pad_mask
-from espnet_import.nets.pytorch_backend.nets_utils import pad_list, th_accuracy
-from espnet_import.nets.pytorch_backend.transformer.label_smoothing_loss import (
-    LabelSmoothingLoss,
-)
+from src.model.powsm.utils import force_gatherable
+from src.espnet_import.nets_utils import make_pad_mask, pad_list, th_accuracy
+from src.espnet_import.label_smoothing_loss import LabelSmoothingLoss
 
-# from espnet_import.nets.e2e_asr_common import ErrorCalculator
+# from src.espnet_import.error_calculator import ErrorCalculator
 from src.recipe.phone_recognition.error_calculator import ErrorCalculator
 
 from src.model.powsm.ctc import CTC

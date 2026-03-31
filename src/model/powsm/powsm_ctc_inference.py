@@ -333,13 +333,7 @@ def build_powsm_ctc_inference(
     )
 
     # Lazy import to keep module import cheaper/clearer failure mode
-    try:
-        from espnet2.bin.s2t_inference_ctc import Speech2TextGreedySearch
-    except Exception as e:  # pragma: no cover
-        raise RuntimeError(
-            "ESPnet is required for POWSM-CTC inference wrapping. "
-            "Install dependencies (espnet==202509) and try again."
-        ) from e
+    from src.espnet_import.minimal_s2t_inference_ctc import Speech2TextGreedySearch
 
     # NOTE: The ESPnet builder path uses torch.load() internally. On some systems
     # (e.g., strict RSS limits), loading a 1B .pth checkpoint can be killed due
