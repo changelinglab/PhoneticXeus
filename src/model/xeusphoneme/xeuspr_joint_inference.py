@@ -287,8 +287,6 @@ def build_xeus_pr_joint_inference(
 
 
 if __name__ == "__main__":
-    import torchaudio
-
     ckpt_path = "path/to/checkpoints/last.ckpt"
     work_dir = "path/to/exp/cache/xeus"
     vocab_file = (

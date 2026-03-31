@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Minimal standalone S2T decoding — no espnet dependency.
-
+Minimal standalone S2T decoding
 Assumptions
 -----------
 - batch_size = 1; single utterance per call.
@@ -18,9 +17,6 @@ Assumptions
 CTCPrefixScoreTH adapted from ESPnet (Apache 2.0),
 Copyright 2018 Mitsubishi Electric Research Labs (Takaaki Hori).
 """
-
-import argparse
-import yaml
 
 import numpy as np
 import torch
@@ -60,64 +56,6 @@ class _BpeTokenizer:
 def _build_bpe_tokenizer(bpemodel):
     return _BpeTokenizer(bpemodel)
 
-
-# ── Model builder ─────────────────────────────────────────────────────────────
-
-def _build_model_from_file(config_file, model_file, device="cpu"):
-    """Load config YAML, build model, load checkpoint; return (model, args)."""
-    from pathlib import Path
-    config_file = (
-        Path(config_file) if config_file else Path(model_file).parent / "config.yaml"
-    )
-    with open(config_file, "r", encoding="utf-8") as f:
-        args = argparse.Namespace(**yaml.safe_load(f))
-
-    model = _build_s2t_ctc_model(args)
-    model.to(device)
-
-    if model_file is not None:
-        state = torch.load(model_file, map_location=device, weights_only=False)
-        if "module" in state:
-            state = state["module"]
-        model.load_state_dict(state, strict=False)
-
-    return model, args
-
-
-def _build_s2t_ctc_model(args):
-    """Instantiate ESPnetS2TCTCModel from config args using local modules."""
-    from model.powsm.builders_common import (
-        load_token_list, build_frontend, build_specaug, build_normalize, build_ctc,
-    )
-    from model.powsm.e_branchformer_ctc import EBranchformerCTCEncoder
-    from model.powsm.prompt_encoder import PromptEncoder
-    from model.powsm.s2t_ctc_model import ESPnetS2TCTCModel
-
-    token_list = load_token_list(args.token_list)
-    vocab_size = len(token_list)
-
-    frontend, input_size = build_frontend(args)
-    specaug = build_specaug(args) if getattr(args, "specaug", None) else None
-    normalize = build_normalize(args, args.normalize_conf["stats_file"])
-
-    encoder = EBranchformerCTCEncoder(input_size=input_size, **args.encoder_conf)
-    prompt_encoder = PromptEncoder(
-        input_size=args.promptencoder_conf["output_size"],
-        **args.promptencoder_conf,
-    )
-    ctc = build_ctc(vocab_size, encoder.output_size(), getattr(args, "ctc_conf", {}))
-
-    return ESPnetS2TCTCModel(
-        vocab_size=vocab_size,
-        token_list=token_list,
-        frontend=frontend,
-        specaug=specaug,
-        normalize=normalize,
-        encoder=encoder,
-        prompt_encoder=prompt_encoder,
-        ctc=ctc,
-        **getattr(args, "model_conf", {}),
-    )
 
 
 # ── CTCPrefixScoreTH ──────────────────────────────────────────────────────────
@@ -343,9 +281,8 @@ class Speech2TextGreedySearch:
 
     def __init__(
         self,
-        s2t_train_config=None,
-        s2t_model_file=None,
-        token_type=None,
+        model,
+        train_args,
         bpemodel=None,
         device="cpu",
         dtype="float32",
@@ -353,15 +290,11 @@ class Speech2TextGreedySearch:
         task_sym="<asr>",
         **_,
     ):
-        s2t_model, s2t_train_args = _build_model_from_file(
-            s2t_train_config, s2t_model_file, device
-        )
-        s2t_model.to(dtype=getattr(torch, dtype)).eval()
+        s2t_model = model.to(dtype=getattr(torch, dtype)).eval()
+        s2t_train_args = train_args
 
-        if token_type is None:
-            token_type = s2t_train_args.token_type
         if bpemodel is None:
-            bpemodel = s2t_train_args.bpemodel
+            bpemodel = getattr(s2t_train_args, "bpemodel", None)
         tokenizer = _build_bpe_tokenizer(bpemodel) if bpemodel else None
 
         converter = _TokenIDConverter(token_list=s2t_model.token_list)

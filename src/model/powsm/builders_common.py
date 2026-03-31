@@ -6,6 +6,7 @@ This module provides shared utilities for building POWSM (hybrid) and POWSM-CTC 
 - Frontend/SpecAug/Normalize/CTC module creation
 """
 
+import os
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 import yaml
@@ -206,9 +207,39 @@ POWSM_REL_STATS = "exp/s2t_stats_raw_bpe40000/train/feats_stats.npz"
 POWSM_REL_BPE = "data/token_list/bpe_unigram40000/bpe.model"
 
 
-# POWSM-CTC specific paths (to be updated when HF repo is available)
-# Default: ESPnet OWSM-CTC v4 1B (`espnet/owsm_ctc_v4_1B`) layout
-POWSM_CTC_REL_CONFIG = "exp/temp/config.yaml"
-POWSM_CTC_REL_CKPT = "exp/temp/valid.total_count.ave.till70epoch.pth"
+# POWSM-CTC specific paths (espnet/powsm_ctc repo layout)
+POWSM_CTC_REL_CONFIG = "exp/s2t_train_conv2d_size768_e9_d9_mel80_raw_bpe40000/config.yaml"
+POWSM_CTC_REL_CKPT = "exp/s2t_train_conv2d_size768_e9_d9_mel80_raw_bpe40000/valid.total_count.ave_5best.till70epoch.pth"
 POWSM_CTC_REL_STATS = "exp/s2t_stats_raw_bpe40000/train/feats_stats.npz"
 POWSM_CTC_REL_BPE = "data/token_list/bpe_unigram40000/bpe.model"
+
+
+def _write_text(path: Union[str, Path], text: str) -> None:
+    """Atomic text write (safe for concurrent distributed workers)."""
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    tmp = p.parent / f".{p.name}.tmp.{os.getpid()}"
+    tmp.write_text(text, encoding="utf-8")
+    os.replace(str(tmp), str(p))
+
+
+def patch_espnet_config_paths(
+    *,
+    original_config_path: Union[str, Path],
+    stats_file: Union[str, Path],
+    bpemodel: Union[str, Path],
+    output_path: Union[str, Path],
+) -> str:
+    """Patch ESPnet config.yaml to use absolute paths for stats_file and bpemodel."""
+    with open(str(original_config_path), "r", encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)
+
+    cfg["bpemodel"] = str(bpemodel)
+    normalize_conf = cfg.get("normalize_conf") or {}
+    if not isinstance(normalize_conf, dict):
+        normalize_conf = {}
+    normalize_conf["stats_file"] = str(stats_file)
+    cfg["normalize_conf"] = normalize_conf
+
+    _write_text(output_path, yaml.safe_dump(cfg, sort_keys=False, allow_unicode=True))
+    return str(output_path)

@@ -25,9 +25,6 @@ rich            # beautiful text formatting in terminal
 pytest          # tests
 # sh            # for running bash commands in some tests (linux/macos only)
 
-# espnet==202509
-git+https://github.com/Shikhar-S/espnet.git@flashattn
-
 huggingface_hub==0.35.3
 # datasets==4.4.1
 datasets==3.6.0 # to avoid torchcodec issues
