@@ -198,9 +198,8 @@ def resolve_model_paths(
 
 
 # Relative paths from hf repo structure (espnet style)
-# TODO(shikhar): Convert to patterns and match patterns within downloaded files.
 
-# POWSM (hybrid) specific paths
+# POWSM (hybrid) specific paths (espnet/powsm repo layout)
 POWSM_REL_CONFIG = "exp/s2t_train_s2t_ebf_conv2d_size768_e9_d9_piecewise_lr5e-4_warmup60k_flashattn_raw_bpe40000/config.yaml"
 POWSM_REL_CKPT = "exp/s2t_train_s2t_ebf_conv2d_size768_e9_d9_piecewise_lr5e-4_warmup60k_flashattn_raw_bpe40000/valid.acc.ave_5best.till45epoch.pth"
 POWSM_REL_STATS = "exp/s2t_stats_raw_bpe40000/train/feats_stats.npz"

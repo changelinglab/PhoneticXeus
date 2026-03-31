@@ -61,9 +61,7 @@ class TokenIDConverter:
         return [self.token_list[i] for i in integers]
 
     def tokens2ids(self, tokens: Iterable[str]) -> List[int]:
-        # NOTE(shikhar): hack for powsm tokenizer to work with non / delimited tokens.
-        # Example, buckeye.
-        # TODO(shikhar): Combine this class with sentencepiece tokenizer class
+        # hack for powsm tokenizer to work with non / delimited tokens.
         tokens = [
             f"/{t}/" if not (t.startswith("/") and t.endswith("/")) else t
             for t in tokens
@@ -108,7 +106,6 @@ def build_powsm_tokenizer(
     Returns: TokenIDConverter instance
     """
     # Relative paths from hf repo structure (espnet style)
-    # TODO(shikhar): Convert to patterns and match patterns within downloaded files.
     REL_CONFIG = "exp/s2t_train_s2t_ebf_conv2d_size768_e9_d9_piecewise_lr5e-4_warmup60k_flashattn_raw_bpe40000/config.yaml"
 
     if hf_repo:
