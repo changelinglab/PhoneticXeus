@@ -5,4 +5,4 @@ pyyaml
 typeguard
 packaging
 numpy
-gradio>=5.0
+gradio==5.33.0
