@@ -5,12 +5,10 @@ import torch
 import torchaudio
 from typeguard import typechecked
 
-from espnet2.legacy.nets.e2e_asr_common import ErrorCalculator
-from espnet2.legacy.nets.pytorch_backend.nets_utils import pad_list, th_accuracy
-from espnet2.legacy.nets.pytorch_backend.transformer.label_smoothing_loss import (
-    LabelSmoothingLoss,
-)
-from espnet2.asr.encoder.transformer_encoder import TransformerEncoder
+from src.espnet_import.error_calculator import ErrorCalculator
+from src.espnet_import.nets_utils import pad_list, th_accuracy
+from src.espnet_import.label_smoothing_loss import LabelSmoothingLoss
+from src.espnet_import.transformer_encoder import TransformerEncoder
 from src.model.powsm.ctc import CTC
 from src.model.powsm.utils import force_gatherable
 from src.model.powsm.e_branchformer import EBranchformerEncoder

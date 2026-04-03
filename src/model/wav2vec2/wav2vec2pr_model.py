@@ -3,7 +3,7 @@
 from typing import List, Optional, Tuple, Union
 
 import torch
-from espnet2.torch_utils.device_funcs import force_gatherable
+from src.model.powsm.utils import force_gatherable
 from src.recipe.phone_recognition.error_calculator import ErrorCalculator
 
 from src.model.powsm.ctc import CTC

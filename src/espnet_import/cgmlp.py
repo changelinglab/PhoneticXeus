@@ -8,8 +8,8 @@ References:
 
 import torch
 
-from espnet_import.nets.pytorch_backend.nets_utils import get_activation
-from espnet_import.nets.pytorch_backend.transformer.layer_norm import LayerNorm
+from src.espnet_import.nets_utils import get_activation
+from src.espnet_import.layer_norm import LayerNorm
 
 
 class ConvolutionalSpatialGatingUnit(torch.nn.Module):
@@ -64,7 +64,6 @@ class ConvolutionalSpatialGatingUnit(torch.nn.Module):
         Returns:
             out (torch.Tensor): (N, T, D/2)
         """
-
         x_r, x_g = x.chunk(2, dim=-1)
 
         x_g = self.norm(x_g)  # (N, T, D/2)

@@ -9,9 +9,11 @@ from typing import Any, Dict, List, Optional, Union
 import numpy as np
 import torch
 
-from espnet_import.nets.batch_beam_search import BatchBeamSearch
-from espnet_import.nets.scorers.ctc import CTCPrefixScorer
-from espnet_import.nets.scorers.length_bonus import LengthBonus
+from src.espnet_import.minimal_ctcattn_beamsearch import (
+    BatchBeamSearch,
+    CTCPrefixScorer,
+    LengthBonus,
+)
 
 from src.utils import RankedLogger
 from src.model.xeusphoneme.builders import build_xeus_pr_from_hf
@@ -285,8 +287,6 @@ def build_xeus_pr_joint_inference(
 
 
 if __name__ == "__main__":
-    import torchaudio
-
     ckpt_path = "path/to/checkpoints/last.ckpt"
     work_dir = "path/to/exp/cache/xeus"
     vocab_file = (

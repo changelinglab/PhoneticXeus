@@ -4,7 +4,7 @@ from typing import Dict, Iterable, List, Union
 import sentencepiece as spm
 from typeguard import typechecked
 
-from espnet2.text.abs_tokenizer import AbsTokenizer
+from src.espnet_import.abs_tokenizer import AbsTokenizer
 
 
 class SentencepiecesTokenizer(AbsTokenizer):

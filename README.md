@@ -143,7 +143,7 @@ Metrics: PER (Phone Error Rate), PFER (Phone Feature Error Rate), FED (Feature E
 ## Citation
 
 ```bibtex
-@misc{bharadwaj2026empiricalrecipeuniversalphone,
+@misc{pxeus26,
       title={An Empirical Recipe for Universal Phone Recognition},
       author={Shikhar Bharadwaj and Chin-Jou Li and Kwanghee Choi and Eunjung Yeo and William Chen and Shinji Watanabe and David R. Mortensen},
       year={2026},
