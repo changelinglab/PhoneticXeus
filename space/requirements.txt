@@ -1,5 +1,6 @@
 torch
 torchaudio
+soundfile
 huggingface_hub
 pyyaml
 typeguard

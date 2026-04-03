@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import gradio as gr
 import torch
 import torchaudio
+import soundfile as sf
 from huggingface_hub import hf_hub_download
 
 from src.model.xeusphoneme.builders import build_xeus_pr_inference
@@ -43,10 +44,12 @@ def transcribe(audio_path):
     if inference is None:
         inference = load_model()
 
-    waveform, sr = torchaudio.load(audio_path)
+    data, sr = sf.read(audio_path, dtype="float32")
+    waveform = torch.from_numpy(data)
+    if waveform.dim() == 2:
+        waveform = waveform.mean(dim=1)
     if sr != SAMPLE_RATE:
         waveform = torchaudio.functional.resample(waveform, sr, SAMPLE_RATE)
-    waveform = waveform.mean(dim=0)  # mono
     waveform = waveform[: SAMPLE_RATE * MAX_SECONDS]
 
     if waveform.numel() == 0:
