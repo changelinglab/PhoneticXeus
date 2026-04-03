@@ -4,7 +4,6 @@ import sys
 # Ensure vendored src/ is importable
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-import spaces
 import gradio as gr
 import torch
 import torchaudio
@@ -35,7 +34,6 @@ def load_model():
     )
 
 
-@spaces.GPU
 def transcribe(audio_path):
     """Run phone recognition on uploaded/recorded audio."""
     global inference
@@ -54,15 +52,7 @@ def transcribe(audio_path):
     if waveform.numel() == 0:
         return "", ""
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    inference.model.to(device)
-    inference.device = device
-
-    results = inference(waveform.to(device))
-
-    inference.model.to("cpu")
-    inference.device = "cpu"
-    torch.cuda.empty_cache()
+    results = inference(waveform)
 
     processed = results[0]["processed_transcript"]
     predicted = results[0]["predicted_transcript"]

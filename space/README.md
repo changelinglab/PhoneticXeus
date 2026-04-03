@@ -10,7 +10,7 @@ pinned: false
 license: apache-2.0
 models:
   - changelinglab/PhoneticXeus
-hardware: zero-a10g
+hardware: cpu-basic
 ---
 
 # PhoneticXeus -- Multilingual Phone Recognition

@@ -6,4 +6,3 @@ typeguard
 packaging
 numpy
 gradio>=5.0
-spaces
