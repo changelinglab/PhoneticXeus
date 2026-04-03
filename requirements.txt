@@ -25,16 +25,12 @@ pre-commit      # hooks for applying linters on commit
 rich            # beautiful text formatting in terminal
 pytest          # tests
 # sh            # for running bash commands in some tests (linux/macos only)
-# espnet==202509
-git+https://github.com/y00njaekim/espnet.git@hotfix
-# ESPnet runtime deps (needed for espnet2 import chain when running S2T/CTC inference)
 humanfriendly
 torch-complex
 h5py
 kaldiio
 g2p-en
 jamo
-espnet-tts-frontend
 jaconv
 huggingface_hub==0.35.3
 datasets==3.6.0

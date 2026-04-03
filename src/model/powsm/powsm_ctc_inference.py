@@ -6,13 +6,11 @@ but delegates actual greedy CTC decoding (short-form + long-form buffered) to ES
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 import torch
-import yaml
 from typeguard import typechecked
 
 from src.core.utils import download_hf_snapshot
@@ -21,60 +19,15 @@ from src.model.powsm.builders_common import (
     POWSM_CTC_REL_CONFIG,
     POWSM_CTC_REL_CKPT,
     POWSM_CTC_REL_STATS,
+    patch_espnet_config_paths,
     resolve_model_paths,
 )
+from src.model.powsm.powsm_ctc_model import build_powsm_ctc_from_files
 from src.utils import RankedLogger
 
 log = RankedLogger(__name__, rank_zero_only=True)
 
 
-def _write_text(path: Union[str, Path], text: str) -> None:
-    """Write text to disk (best-effort atomic write).
-
-    Multiple distributed inference workers may create the same patched config file
-    concurrently. Writing to a temp file and renaming prevents readers from seeing
-    a partially-written YAML.
-    """
-    p = Path(path)
-    p.parent.mkdir(parents=True, exist_ok=True)
-    tmp = p.parent / f".{p.name}.tmp.{os.getpid()}"
-    tmp.write_text(text, encoding="utf-8")
-    os.replace(str(tmp), str(p))
-
-
-def patch_espnet_config_paths(
-    *,
-    original_config_path: Union[str, Path],
-    stats_file: Union[str, Path],
-    bpemodel: Union[str, Path],
-    output_path: Union[str, Path],
-) -> str:
-    """Patch ESPnet config.yaml to use absolute paths for stats_file and bpemodel.
-
-    ESPnet's inference builders rebuild modules from config.yaml and expect paths
-    like `normalize_conf.stats_file` and `bpemodel` to be valid from the current CWD.
-    In PhoneticXeus, assets live under `work_dir`, so we patch them to absolute paths.
-    """
-    original_config_path = str(original_config_path)
-    stats_file = str(stats_file)
-    bpemodel = str(bpemodel)
-    output_path = str(output_path)
-
-    with open(original_config_path, "r", encoding="utf-8") as f:
-        cfg = yaml.safe_load(f)
-
-    # bpemodel: top-level key in ESPnet2 S2T configs
-    cfg["bpemodel"] = bpemodel
-
-    # normalize_conf.stats_file: nested key used by GlobalMVN
-    normalize_conf = cfg.get("normalize_conf") or {}
-    if not isinstance(normalize_conf, dict):
-        normalize_conf = {}
-    normalize_conf["stats_file"] = stats_file
-    cfg["normalize_conf"] = normalize_conf
-
-    _write_text(output_path, yaml.safe_dump(cfg, sort_keys=False, allow_unicode=True))
-    return output_path
 
 
 class PowsmCTCInference:
@@ -333,13 +286,7 @@ def build_powsm_ctc_inference(
     )
 
     # Lazy import to keep module import cheaper/clearer failure mode
-    try:
-        from espnet2.bin.s2t_inference_ctc import Speech2TextGreedySearch
-    except Exception as e:  # pragma: no cover
-        raise RuntimeError(
-            "ESPnet is required for POWSM-CTC inference wrapping. "
-            "Install dependencies (espnet==202509) and try again."
-        ) from e
+    from src.espnet_import.minimal_s2t_inference_ctc import Speech2TextGreedySearch
 
     # NOTE: The ESPnet builder path uses torch.load() internally. On some systems
     # (e.g., strict RSS limits), loading a 1B .pth checkpoint can be killed due
@@ -372,17 +319,18 @@ def build_powsm_ctc_inference(
 
     torch.load = _torch_load_mmap  # type: ignore[assignment]
     try:
-        backend = Speech2TextGreedySearch(
-            s2t_train_config=patched_cfg,
-            s2t_model_file=mdl_path,
-            device=device,
-            dtype=dtype,
-            # Match ESPnet default (caller may override per-call via inference args)
-            lang_sym="<unk>",
-            task_sym="<pr>",
-        )
+        net = build_powsm_ctc_from_files(patched_cfg, mdl_path, device=device)
     finally:
         torch.load = _orig_torch_load  # type: ignore[assignment]
+
+    backend = Speech2TextGreedySearch(
+        model=net.model,
+        train_args=net.training_args,
+        device=device,
+        dtype=dtype,
+        lang_sym="<unk>",
+        task_sym="<pr>",
+    )
 
     return PowsmCTCInference(
         backend=backend,
