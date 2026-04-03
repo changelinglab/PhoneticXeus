@@ -2,6 +2,7 @@ ______________________________________________________________________
 
 <div align="center">
 
+<a href="https://arxiv.org/abs/2603.29042"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2603.29042-b31b1b?logo=arxiv&logoColor=white"></a>
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?logo=pytorchlightning&logoColor=white"></a>
 <a href="https://hydra.cc/"><img alt="Config: Hydra" src="https://img.shields.io/badge/Config-Hydra-89b8cd"></a><br>
@@ -138,6 +139,20 @@ python -m src.metrics.phone_recognition \
 ```
 
 Metrics: PER (Phone Error Rate), PFER (Phone Feature Error Rate), FED (Feature Edit Distance), SUB/INS/DEL rates.
+
+## Citation
+
+```bibtex
+@misc{bharadwaj2026empiricalrecipeuniversalphone,
+      title={An Empirical Recipe for Universal Phone Recognition},
+      author={Shikhar Bharadwaj and Chin-Jou Li and Kwanghee Choi and Eunjung Yeo and William Chen and Shinji Watanabe and David R. Mortensen},
+      year={2026},
+      eprint={2603.29042},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2603.29042},
+}
+```
 
 ## More Documentation
 
