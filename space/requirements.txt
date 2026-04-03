@@ -1,0 +1,9 @@
+torch
+torchaudio
+huggingface_hub
+pyyaml
+typeguard
+packaging
+numpy
+gradio>=5.0
+spaces
