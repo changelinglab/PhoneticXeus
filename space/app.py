@@ -34,6 +34,7 @@ def load_model():
         vocab_file=vocab,
         config_file=config,
         device="cpu",
+        interctc_use_conditioning=True,
     )
 
 
