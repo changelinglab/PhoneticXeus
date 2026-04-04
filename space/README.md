@@ -1,6 +1,6 @@
 ---
 title: PhoneticXeus
-emoji: "\U0001F4DE"
+emoji: "\U0001F30D"
 colorFrom: blue
 colorTo: purple
 sdk: gradio
@@ -15,7 +15,7 @@ hardware: cpu-basic
 
 # PhoneticXeus -- Multilingual Phone Recognition
 
-Record or upload audio to get an IPA phone transcription.
+Transcribe multilingual speech into IPA
 
 Based on [PhoneticXeus](https://huggingface.co/changelinglab/PhoneticXeus), a multilingual phone recognition model using self-conditioned CTC on the XEUS speech encoder.
 

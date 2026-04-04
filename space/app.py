@@ -22,15 +22,17 @@ def load_model():
     ckpt = hf_hub_download(
         "changelinglab/PhoneticXeus", "checkpoint-22000.ckpt"
     )
-    vocab = os.path.join(
+    resources = os.path.join(
         os.path.dirname(__file__),
-        "src", "model", "xeusphoneme", "resources", "ipa_vocab.json",
+        "src", "model", "xeusphoneme", "resources",
     )
+    vocab = os.path.join(resources, "ipa_vocab.json")
+    config = os.path.join(resources, "xeus_config.yaml")
     return build_xeus_pr_inference(
         work_dir="/tmp/cache/xeus",
         checkpoint=ckpt,
         vocab_file=vocab,
-        hf_repo="espnet/xeus",
+        config_file=config,
         device="cpu",
     )
 
@@ -69,7 +71,7 @@ def transcribe(audio_path):
 with gr.Blocks(title="PhoneticXeus") as demo:
     gr.Markdown(
         "# PhoneticXeus\n"
-        "Multilingual phone recognition -- record or upload audio "
+        "Multilingual phone recognition -- record or upload the multilingual speech "
         "to get an IPA transcription.\n\n"
         "Model: [changelinglab/PhoneticXeus]"
         "(https://huggingface.co/changelinglab/PhoneticXeus) "
