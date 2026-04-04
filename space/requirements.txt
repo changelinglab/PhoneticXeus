@@ -1,0 +1,10 @@
+torch
+torchaudio
+soundfile
+huggingface_hub
+pyyaml
+typeguard
+packaging
+numpy
+omegaconf
+gradio==5.33.0
