@@ -12,6 +12,7 @@ ______________________________________________________________________
 # PhoneticXeus
 
 Code and training recipe for PhoneticXeus, a multilingual phone recognition model using self-conditioned CTC on the XEUS speech encoder.
+HF demo at: [changelinglab/PhoneticXeus](https://huggingface.co/spaces/changelinglab/PhoneticXeus)
 
 ## Setup
 
