@@ -44,7 +44,7 @@ The pre-trained PhoneticXeus checkpoint is available on HuggingFace: [changeling
 ```python
 from huggingface_hub import hf_hub_download
 
-ckpt_path = hf_hub_download("changelinglab/PhoneticXeus", "checkpoint-22000.ckpt")
+ckpt_path = hf_hub_download("changelinglab/PhoneticXeus", "phoneticxeus_state_dict.pt")
 ```
 
 ### Quick inference
