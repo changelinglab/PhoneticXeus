@@ -20,7 +20,7 @@ inference = None
 
 def load_model():
     ckpt = hf_hub_download(
-        "changelinglab/PhoneticXeus", "checkpoint-22000.ckpt"
+        "changelinglab/PhoneticXeus", "phoneticxeus_state_dict.pt"
     )
     resources = os.path.join(
         os.path.dirname(__file__),
