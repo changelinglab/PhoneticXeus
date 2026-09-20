@@ -47,7 +47,8 @@ class MockEncoder(nn.Module):
         self.interctc_layer_idx = interctc_layer_idx or []
         self.interctc_use_conditioning = False
 
-    def forward(self, feats, feats_lengths, masks=None, return_all_hs=False):
+    def forward(self, feats, feats_lengths, masks=None, ctc=None,
+                return_all_hs=False):
         out = self.proj(feats)
         if return_all_hs:
             hs_list = [out] * self.num_blocks

@@ -22,8 +22,11 @@ class ErrorCalculator:
             token_list.index(sym_space) if sym_space in token_list else None
         )
         self.ignore_set = {ignore_id, blank_id, self.idx_space}
-        if log_phone_metrics:
-            self.evaluator = PhoneRecognitionEvaluator(normalize_ipa=True)
+        self.evaluator = (
+            PhoneRecognitionEvaluator(normalize_ipa=True)
+            if log_phone_metrics
+            else None
+        )
 
     def _ctc_collapse_batch(self, x: torch.Tensor):
         if x.numel() == 0:
@@ -106,8 +109,8 @@ class ErrorCalculator:
             summary, _ = self.evaluator.evaluate(
                 test_data, tqdm_enabled=False,
             )
-            metrics["per"] = summary.FER
-            metrics["pfer"] = float(summary.PER)
+            metrics["per"] = summary.PER
+            metrics["pfer"] = summary.PFER
             metrics["ins"] = summary.INS
             metrics["del"] = summary.DEL
             metrics["sub"] = summary.SUB

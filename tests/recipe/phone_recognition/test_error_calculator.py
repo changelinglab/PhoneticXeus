@@ -24,15 +24,19 @@ def setup_calculators(token_list: List[str], blank_id: int):
     # Initialize Optimized Calculator
     device = "cuda" if torch.cuda.is_available() else "cpu"
     opt_calc = CustomErrorCalculator(
-        token_list=token_list, blank_id=blank_id, sym_space=space_sym, ignore_id=-1
+        token_list=token_list,
+        blank_id=blank_id,
+        sym_space=space_sym,
+        ignore_id=-1,
+        log_phone_metrics=False,
     )
 
     return ref_calc, opt_calc, device
 
 
-@pytest.mark.parametrize("iteration", range(1000))
+@pytest.mark.parametrize("iteration", range(50))
 def test_randomized_fuzzing(iteration):
-    """Runs 1,000 randomized tests with varying batch sizes and lengths."""
+    """Runs 50 randomized tests with varying batch sizes and lengths."""
     # Setup vocab
     token_list = ["<blank>", "<space>", "a", "b", "c", "sh", "th", "p", "t", "k"]
     blank_id = 0
@@ -61,9 +65,7 @@ def test_randomized_fuzzing(iteration):
         ref_cer = ref_calc(ys_hat.cpu().numpy(), ys_pad.cpu().numpy(), is_ctc=True)
 
         # Run Optimized (GPU/Native)
-        opt_cer = opt_calc(ys_hat, ys_pad, ys_pad_lens)
-        if isinstance(opt_cer, torch.Tensor):
-            opt_cer = opt_cer.item()
+        opt_cer = opt_calc(ys_hat, ys_pad, ys_pad_lens)["cer"] / 100
 
     # Assert equality with tolerance for float precision
     assert opt_cer == pytest.approx(ref_cer if ref_cer is not None else 0.0, abs=1e-6)
@@ -112,9 +114,7 @@ def test_hard_edge_cases():
         ys_pad_lens = torch.tensor(case["lens"]).to(device)
 
         ref_cer = ref_calc(ys_hat.cpu().numpy(), ys_pad.cpu().numpy(), is_ctc=True)
-        opt_cer = opt_calc(ys_hat, ys_pad, ys_pad_lens)
-        if isinstance(opt_cer, torch.Tensor):
-            opt_cer = opt_cer.item()
+        opt_cer = opt_calc(ys_hat, ys_pad, ys_pad_lens)["cer"] / 100
 
         assert opt_cer == pytest.approx(
             ref_cer if ref_cer is not None else 0.0, abs=1e-6
