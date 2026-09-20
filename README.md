@@ -19,6 +19,10 @@ Code and training recipe for PhoneticXeus, a multilingual phone recognition mode
 - 🕹️ **Demo**: [changelinglab/PhoneticXeus (Space)](https://huggingface.co/spaces/changelinglab/PhoneticXeus)
 - 📄 **Paper**: [arXiv 2603.29042](https://arxiv.org/abs/2603.29042)
 
+## Updates
+
+- **2026-09-20** Inference now applies self-conditioned CTC at layers 4, 8, 12 as in training; earlier hub code, the Space, and the README snippet loaded but never applied the conditioning weights, so update to the latest revision.
+
 ## Quick Inference
 
 The fastest way to use PhoneticXeus is the 🤗 Transformers `AutoModel` interface,
