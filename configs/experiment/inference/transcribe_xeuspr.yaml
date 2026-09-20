@@ -32,3 +32,5 @@ inference:
     force_download: False
     config_file: null
     device: cuda # auto, cpu, cuda
+    interctc_layer_idx: null
+    interctc_use_conditioning: false

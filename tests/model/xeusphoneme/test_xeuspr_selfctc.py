@@ -327,8 +327,8 @@ def test_builder_sets_conditioning_layer_on_real_encoder():
 
 
 @pytest.mark.skipif(not _xeus_config_exists, reason=f"Xeus config not found at {XEUS_CONFIG}")
-def test_builder_no_conditioning_default_on_real_encoder():
-    """build_xeus_pr() without the flag leaves conditioning_layer as None."""
+def test_builder_default_is_self_conditioned():
+    """build_xeus_pr() defaults to self-conditioning on layers 4, 8, 12."""
     from src.model.xeusphoneme.builders import build_xeus_pr
 
     model = build_xeus_pr(
@@ -336,6 +336,23 @@ def test_builder_no_conditioning_default_on_real_encoder():
         checkpoint=None,
         vocab_file=XEUS_VOCAB,
         ctc_config={"ctc_type": "builtin"},
+    )
+    assert model.encoder.interctc_layer_idx == [4, 8, 12]
+    assert model.encoder.interctc_use_conditioning is True
+    assert model.encoder.conditioning_layer is not None
+
+
+@pytest.mark.skipif(not _xeus_config_exists, reason=f"Xeus config not found at {XEUS_CONFIG}")
+def test_builder_conditioning_off_on_real_encoder():
+    """build_xeus_pr() with the flag False leaves conditioning_layer as None."""
+    from src.model.xeusphoneme.builders import build_xeus_pr
+
+    model = build_xeus_pr(
+        config_file=XEUS_CONFIG,
+        checkpoint=None,
+        vocab_file=XEUS_VOCAB,
+        ctc_config={"ctc_type": "builtin"},
+        interctc_use_conditioning=False,
     )
     assert model.encoder.conditioning_layer is None
     assert model.encoder.interctc_use_conditioning is False

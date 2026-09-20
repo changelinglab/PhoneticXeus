@@ -367,8 +367,8 @@ def test_builder_injects_interctc_layer_idx():
     not __import__("pathlib").Path(XEUS_CONFIG).exists(),
     reason=f"Xeus config not found at {XEUS_CONFIG}",
 )
-def test_builder_no_interctc_default():
-    """build_xeus_pr() with no interctc args leaves encoder.interctc_layer_idx empty."""
+def test_builder_interctc_off():
+    """build_xeus_pr() with interctc_layer_idx=None leaves encoder.interctc_layer_idx empty."""
     from src.model.xeusphoneme.builders import build_xeus_pr
 
     model = build_xeus_pr(
@@ -376,6 +376,8 @@ def test_builder_no_interctc_default():
         checkpoint=None,
         vocab_file=XEUS_VOCAB,
         ctc_config={"ctc_type": "builtin"},
+        interctc_layer_idx=None,
+        interctc_use_conditioning=False,
     )
     assert model.encoder.interctc_layer_idx == [], (
         f"Expected empty list, got {model.encoder.interctc_layer_idx}"

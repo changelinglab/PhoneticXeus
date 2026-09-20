@@ -1,0 +1,14 @@
+{
+  "model_type": "phoneticxeus",
+  "architectures": ["PhoneticXeusModel"],
+  "auto_map": {
+    "AutoConfig": "configuration_phoneticxeus.PhoneticXeusConfig",
+    "AutoModel": "modeling_phoneticxeus.PhoneticXeusModel"
+  },
+  "config_yaml": "pxeus/model/xeusphoneme/resources/xeus_config.yaml",
+  "vocab_file": "pxeus/model/xeusphoneme/resources/ipa_vocab.json",
+  "interctc_layer_idx": [4, 8, 12],
+  "interctc_use_conditioning": true,
+  "sampling_rate": 16000,
+  "torch_dtype": "float32"
+}

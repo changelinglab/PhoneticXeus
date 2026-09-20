@@ -102,7 +102,6 @@ inference = build_xeus_pr_inference(
     config_file="src/model/xeusphoneme/resources/xeus_config.yaml",
     vocab_file="src/model/xeusphoneme/resources/ipa_vocab.json",
     device="cuda" if torch.cuda.is_available() else "cpu",
-    interctc_use_conditioning=True,
 )
 
 waveform, sr = torchaudio.load("audio.wav")

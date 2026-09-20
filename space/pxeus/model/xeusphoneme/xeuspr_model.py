@@ -6,7 +6,7 @@
 #  Apache 2.0  (http://www.apache.org/licenses/LICENSE-2.0)
 
 Usage:
-    python -m src.model.xeusphoneme.xeuspr_model \
+    python -m pxeus.model.xeusphoneme.xeuspr_model \
         --work_dir path/to/cache/xeus
 """
 from typing import Any, Dict, Optional, Tuple, Union
@@ -15,12 +15,12 @@ import argparse
 import torch
 import torch.nn.functional as F
 import torchaudio
-from src.model.powsm.utils import force_gatherable
-from src.espnet_import.nets_utils import make_pad_mask, pad_list, th_accuracy
-from src.espnet_import.label_smoothing_loss import LabelSmoothingLoss
+from pxeus.model.powsm.utils import force_gatherable
+from pxeus.espnet_import.nets_utils import make_pad_mask, pad_list, th_accuracy
+from pxeus.espnet_import.label_smoothing_loss import LabelSmoothingLoss
 
-from src.model.powsm.ctc import CTC
-from src.utils import RankedLogger
+from pxeus.model.powsm.ctc import CTC
+from pxeus.utils import RankedLogger
 
 log = RankedLogger(__name__, rank_zero_only=False)
 
@@ -307,7 +307,7 @@ class XeusPRModel(torch.nn.Module):
         stats = {}
         if not self.training:  # err calc, slow?
             if self.error_calculator is None:
-                from src.recipe.phone_recognition.error_calculator import (
+                from pxeus.recipe.phone_recognition.error_calculator import (
                     ErrorCalculator,
                 )
 
@@ -371,9 +371,9 @@ class XeusPRModel(torch.nn.Module):
 
 
 if __name__ == "__main__":
-    # python -m src.model.xeusphoneme.xeuspr_model
+    # python -m pxeus.model.xeusphoneme.xeuspr_model
     import argparse
-    from src.model.xeusphoneme.builders import build_xeus_pr_from_hf
+    from pxeus.model.xeusphoneme.builders import build_xeus_pr_from_hf
 
     parser = argparse.ArgumentParser()
     parser.add_argument(

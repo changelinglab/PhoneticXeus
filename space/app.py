@@ -1,7 +1,7 @@
 import os
 import sys
 
-# Ensure vendored src/ is importable
+# Ensure the vendored package is importable
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import gradio as gr
@@ -10,7 +10,7 @@ import torchaudio
 import soundfile as sf
 from huggingface_hub import hf_hub_download
 
-from src.model.xeusphoneme.builders import build_xeus_pr_inference
+from pxeus.model.xeusphoneme.builders import build_xeus_pr_inference
 
 MAX_SECONDS = 60
 SAMPLE_RATE = 16000
@@ -24,7 +24,7 @@ def load_model():
     )
     resources = os.path.join(
         os.path.dirname(__file__),
-        "src", "model", "xeusphoneme", "resources",
+        "pxeus", "model", "xeusphoneme", "resources",
     )
     vocab = os.path.join(resources, "ipa_vocab.json")
     config = os.path.join(resources, "xeus_config.yaml")
@@ -34,7 +34,6 @@ def load_model():
         vocab_file=vocab,
         config_file=config,
         device="cpu",
-        interctc_use_conditioning=True,
     )
 
 

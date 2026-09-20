@@ -6,15 +6,15 @@ import yaml
 import json
 import torch
 
-from src.model.powsm.specaug import SpecAug
-from src.model.powsm.e_branchformer import EBranchformerEncoder
-from src.model.xeusphoneme.cnn_frontend import CNNFrontend as Wav2VecCNN
-from src.model.xeusphoneme.linear_layer import LinearProjection
-from src.core.utils import download_hf_snapshot
-from src.model.xeusphoneme.xeuspr_model import XeusPRModel
-from src.model.xeusphoneme.xeuspr_inference import XeusPRInference
-from src.model.powsm.ctc import CTC
-from src.utils import RankedLogger
+from pxeus.model.powsm.specaug import SpecAug
+from pxeus.model.powsm.e_branchformer import EBranchformerEncoder
+from pxeus.model.xeusphoneme.cnn_frontend import CNNFrontend as Wav2VecCNN
+from pxeus.model.xeusphoneme.linear_layer import LinearProjection
+from pxeus.core.utils import download_hf_snapshot
+from pxeus.model.xeusphoneme.xeuspr_model import XeusPRModel
+from pxeus.model.xeusphoneme.xeuspr_inference import XeusPRInference
+from pxeus.model.powsm.ctc import CTC
+from pxeus.utils import RankedLogger
 
 
 log = RankedLogger(__name__, rank_zero_only=False)
@@ -129,7 +129,7 @@ def build_xeus_pr(
     # Build optional attention decoder
     decoder = None
     if decoder_config:
-        from src.model.powsm.transformer_decoder import TransformerDecoder
+        from pxeus.model.powsm.transformer_decoder import TransformerDecoder
 
         decoder = TransformerDecoder(
             vocab_size=vocab_size,
