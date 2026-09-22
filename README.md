@@ -13,7 +13,7 @@ ______________________________________________________________________
 
 > 🎉 **PhoneticXeus will be presented at Interspeech 2026!**
 
-Code and training recipe for PhoneticXeus, a multilingual phone recognition model using self-conditioned CTC on the XEUS speech encoder. It transcribes speech in 70+ languages into IPA (International Phonetic Alphabet) phones.
+Code and training recipe for PhoneticXeus, a multilingual phone recognition model using self-conditioned CTC on the XEUS speech encoder. It transcribes speech in 100+ languages into IPA (International Phonetic Alphabet) phones.
 
 - 🤗 **Model**: [changelinglab/PhoneticXeus](https://huggingface.co/changelinglab/PhoneticXeus)
 - 🕹️ **Demo**: [changelinglab/PhoneticXeus (Space)](https://huggingface.co/spaces/changelinglab/PhoneticXeus)
