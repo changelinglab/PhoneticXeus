@@ -253,6 +253,15 @@ Metrics: PER (Phone Error Rate), PFER (Phone Feature Error Rate), FED (Feature E
       url={https://arxiv.org/abs/2603.29042},
 }
 ```
+## Star History
+
+<a href="https://www.star-history.com/?repos=changelinglab%2FPhoneticXeus&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=changelinglab/PhoneticXeus&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=changelinglab/PhoneticXeus&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=changelinglab/PhoneticXeus&type=date&legend=top-left" />
+ </picture>
+</a>
 
 ## More Documentation
 
